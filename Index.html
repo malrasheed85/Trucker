@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>سجل محمد — يوليو ٢٠٢٦</title>
+<style>
+:root {
+  --bg: #0F0F0F;
+  --bg2: #1A1A1A;
+  --bg3: #242424;
+  --border: #2E2E2E;
+  --text: #F0EFE8;
+  --text2: #888780;
+  --text3: #555450;
+  --green: #1D9E75;
+  --orange: #EF9F27;
+  --orange-dark: #C97A10;
+  --red: #E24B4A;
+  --blue: #3266AD;
+  --weekend: #2A2040;
+  --weekend-text: #9B8FD4;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, 'SF Pro Display', Arial, sans-serif; min-height: 100vh; padding: 0 0 80px; max-width: 430px; margin: 0 auto; }
+
+/* Header */
+.header { padding: 20px 16px 12px; border-bottom: 0.5px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.header-title { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
+.header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.countdown { text-align: left; }
+.countdown-num { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -1px; line-height: 1; }
+.countdown-label { font-size: 10px; color: var(--text2); margin-top: 2px; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 16px; }
+.metric { background: var(--bg2); border-radius: var(--radius-sm); padding: 10px 10px 8px; border: 0.5px solid var(--border); }
+.metric-label { font-size: 10px; color: var(--text2); margin-bottom: 4px; }
+.metric-value { font-size: 20px; font-weight: 600; line-height: 1; }
+.metric-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+.metric-saving { background: var(--bg2); }
+
+/* Input */
+.input-section { padding: 0 16px 12px; }
+.input-card { background: var(--bg2); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.field-label { font-size: 10px; color: var(--text2); margin-bottom: 4px; }
+input[type=number], input[type=text], input[type=date] {
+  width: 100%; padding: 9px 11px; background: var(--bg3); border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 14px; color: var(--text); font-family: inherit;
+  -webkit-appearance: none;
+}
+input:focus { outline: none; border-color: var(--blue); }
+.sub-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.sub-btn { flex: 1; padding: 7px 4px; background: var(--bg3); border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 12px; color: var(--text2); cursor: pointer; text-align: center; }
+.sub-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+select { width: 100%; padding: 9px 11px; background: var(--bg3); border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 14px; color: var(--text); margin-bottom: 8px; -webkit-appearance: none; }
+.note-input { width: 100%; padding: 9px 11px; background: var(--bg3); border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 13px; color: var(--text); margin-bottom: 8px; }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn { padding: 11px; border-radius: var(--radius-sm); border: 0.5px solid var(--border);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; text-align: center; }
+.btn-add { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn-close-day { background: var(--bg3); color: var(--text2); }
+
+/* Toast */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius);
+  padding: 10px 18px; font-size: 13px; opacity: 0; transition: all 0.3s; z-index: 100;
+  white-space: nowrap; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.ok { border-color: var(--green); color: var(--green); }
+.toast.err { border-color: var(--red); color: var(--red); }
+
+/* Chart */
+.chart-section { padding: 0 16px 12px; }
+.chart-card { background: var(--bg2); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
+.chart-title { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+.chart-wrap { position: relative; height: 120px; display: flex; align-items: flex-end; gap: 4px; }
+.chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
+.chart-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.4s; position: relative; }
+.chart-day-label { font-size: 9px; color: var(--text3); }
+.chart-limit-line { position: absolute; width: 100%; border-top: 1px dashed var(--text3); left: 0; pointer-events: none; }
+.chart-legend { display: flex; gap: 12px; margin-top: 10px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.saving-line-wrap { position: absolute; width: 100%; left: 0; top: 0; height: 100%; pointer-events: none; }
+
+/* Log */
+.log-section { padding: 0 16px; }
+.log-title { font-size: 12px; color: var(--text2); margin-bottom: 10px; font-weight: 500; }
+.day-block { margin-bottom: 10px; border-radius: var(--radius); overflow: hidden; border: 0.5px solid var(--border); }
+.day-header { display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; cursor: pointer; user-select: none; }
+.day-header-right { display: flex; align-items: center; gap: 8px; }
+.day-name { font-size: 13px; font-weight: 500; }
+.day-date { font-size: 11px; color: var(--text2); }
+.day-total { font-size: 14px; font-weight: 600; }
+.day-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.badge-green { background: rgba(29,158,117,0.15); color: var(--green); }
+.badge-orange { background: rgba(239,159,39,0.15); color: var(--orange); }
+.badge-orange-dark { background: rgba(201,122,16,0.15); color: var(--orange-dark); }
+.badge-red { background: rgba(226,75,74,0.15); color: var(--red); }
+.day-entries { background: var(--bg3); border-top: 0.5px solid var(--border); }
+.entry-row { display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 9px 14px; border-bottom: 0.5px solid var(--border); }
+.entry-row:last-child { border-bottom: none; }
+.entry-left { flex: 1; }
+.entry-desc { font-size: 13px; }
+.entry-cat { font-size: 10px; color: var(--text2); margin-top: 2px; }
+.entry-note { font-size: 10px; color: var(--text3); margin-top: 2px; font-style: italic; }
+.entry-amount { font-size: 13px; font-weight: 500; white-space: nowrap; margin-right: 8px; }
+.weekend-header { background: var(--weekend); }
+.weekend-header .day-name, .weekend-header .day-total { color: var(--weekend-text); }
+.open-day-header { background: var(--bg2); }
+.closed-day-green { background: rgba(29,158,117,0.08); }
+.closed-day-orange { background: rgba(239,159,39,0.08); }
+.closed-day-red { background: rgba(226,75,74,0.08); }
+.chevron { font-size: 12px; color: var(--text3); transition: transform 0.2s; }
+.chevron.open { transform: rotate(180deg); }
+.empty-log { text-align: center; padding: 30px; color: var(--text3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">سجل محمد</div>
+      <div class="header-sub" id="current-date-label">يوليو ٢٠٢٦</div>
+    </div>
+    <div class="countdown">
+      <div class="countdown-num" id="countdown-num">30</div>
+      <div class="countdown-label">للراتب القادم</div>
+    </div>
+  </div>
+</div>
+
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-label">الحد اليومي</div>
+    <div class="metric-value" id="daily-limit-val">١٥٠</div>
+    <div class="metric-sub">ريال / يوم</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">المصروف</div>
+    <div class="metric-value" id="total-spent-val" style="color:var(--red);">٠</div>
+    <div class="metric-sub">من بداية الشهر</div>
+  </div>
+  <div class="metric metric-saving">
+    <div class="metric-label">التوفير</div>
+    <div class="metric-value" id="saving-val" style="color:var(--green);">٠</div>
+    <div class="metric-sub">إنجازك الشهري</div>
+  </div>
+</div>
+
+<div class="input-section">
+  <div class="input-card">
+    <div class="input-row">
+      <div>
+        <div class="field-label">التاريخ</div>
+        <input type="date" id="exp-date">
+      </div>
+      <div>
+        <div class="field-label">المبلغ (ريال)</div>
+        <input type="number" id="exp-amount" placeholder="٠" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="field-label">الوصف</div>
+    <input type="text" id="exp-desc" placeholder="وش دفعت؟" style="margin-bottom:8px;">
+    <div class="field-label" style="margin-bottom:4px;">الفئة</div>
+    <select id="exp-cat" onchange="toggleSub()">
+      <option value="طعام 🏠">🥗 طعام</option>
+      <option value="قهوة وشاي ☕">☕ قهوة وشاي</option>
+      <option value="سيارة ⛽">🚗 سيارة</option>
+      <option value="مغسلة 👕">👕 مغسلة ملابس</option>
+      <option value="تنظيف الشقة 🧹">🧹 تنظيف الشقة</option>
+      <option value="صيدلية 💊">💊 صيدلية</option>
+      <option value="ثوابت 📱">📱 ثوابت</option>
+      <option value="أخرى 📦">📦 أخرى</option>
+    </select>
+    <div id="food-sub" class="sub-row">
+      <button class="sub-btn active" onclick="selectSub(this,'طعام 🏠')">🏠 بنفسي</button>
+      <button class="sub-btn" onclick="selectSub(this,'طعام 🛵')">🛵 توصيل</button>
+    </div>
+    <div id="car-sub" class="sub-row" style="display:none">
+      <button class="sub-btn active" onclick="selectSub(this,'سيارة ⛽')">⛽ بنزين</button>
+      <button class="sub-btn" onclick="selectSub(this,'سيارة 🚿')">🚿 غسيل</button>
+    </div>
+    <div id="fixed-sub" class="sub-row" style="display:none">
+      <button class="sub-btn active" onclick="selectSub(this,'ثوابت 📱')">📱 جوال</button>
+      <button class="sub-btn" onclick="selectSub(this,'ثوابت 📶')">📶 نت</button>
+      <button class="sub-btn" onclick="selectSub(this,'ثوابت ▶️')">▶️ يوتيوب</button>
+    </div>
+    <input type="text" class="note-input" id="exp-note" placeholder="نوت (اختياري)...">
+    <div class="btn-row">
+      <button class="btn btn-add" onclick="addExpense()">أضف ＋</button>
+      <button class="btn btn-close-day" onclick="closeDay()">أقفل اليوم ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-card">
+    <div class="chart-title">الصرف اليومي مقارنة بالحد — والتوفير التراكمي</div>
+    <div class="chart-wrap" id="chart-wrap"></div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div> صرف يومي</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div> توفير تراكمي</div>
+      <div class="legend-item" style="gap:3px;"><div style="width:14px;border-top:1px dashed var(--text3);margin-top:4px;"></div> الحد ١٥٠</div>
+    </div>
+  </div>
+</div>
+
+<div class="log-section">
+  <div class="log-title">السجل اليومي</div>
+  <div id="log-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'tracker_v2';
+const DAILY_LIMIT = 150;
+const START_DATE = new Date('2026-06-25');
+const TOTAL_DAYS = 30;
+
+let data = { days: {}, openEntries: {} };
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEY);
+    if (r) data = JSON.parse(r);
+  } catch(e) {}
+}
+
+function toAr(n) {
+  return Math.round(Math.abs(n)).toLocaleString('ar-SA');
+}
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getDayName(dateStr) {
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  return days[new Date(dateStr).getDay()];
+}
+
+function isWeekend(dateStr) {
+  const day = new Date(dateStr).getDay();
+  return day === 5 || day === 6; // الجمعة والسبت
+}
+
+function getDayColor(total) {
+  if (total <= 80) return 'green';
+  if (total <= 120) return 'orange';
+  if (total <= 150) return 'orange-dark';
+  return 'red';
+}
+
+function getDayColorHex(total) {
+  if (total <= 80) return 'var(--green)';
+  if (total <= 120) return 'var(--orange)';
+  if (total <= 150) return 'var(--orange-dark)';
+  return 'var(--red)';
+}
+
+function getDayBadgeText(total) {
+  if (total <= 80) return 'ممتاز 🌟';
+  if (total <= 120) return 'مقبول';
+  if (total <= 150) return 'على الحد';
+  return 'تجاوزت';
+}
+
+function calcCountdown() {
+  const now = new Date();
+  const nextSalary = new Date(START_DATE);
+  nextSalary.setMonth(nextSalary.getMonth() + 1);
+  const diff = Math.ceil((nextSalary - now) / (1000*60*60*24));
+  return Math.max(0, diff);
+}
+
+function calcTotals() {
+  let totalSpent = 0;
+  let saving = 0;
+  Object.entries(data.days).forEach(([date, day]) => {
+    if (day.closed) {
+      totalSpent += day.total;
+      saving += DAILY_LIMIT - day.total;
+    }
+  });
+  // أضف المفتوح
+  Object.values(data.openEntries || {}).forEach(entries => {
+    entries.forEach(e => totalSpent += e.amount);
+  });
+  return { totalSpent, saving };
+}
+
+function updateUI() {
+  const { totalSpent, saving } = calcTotals();
+  document.getElementById('countdown-num').textContent = calcCountdown();
+  document.getElementById('total-spent-val').textContent = toAr(totalSpent);
+  const savEl = document.getElementById('saving-val');
+  savEl.textContent = (saving >= 0 ? '' : '-') + toAr(saving);
+  savEl.style.color = saving >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // تاريخ اليوم
+  const now = new Date();
+  document.getElementById('current-date-label').textContent =
+    now.toLocaleDateString('ar-SA', {month:'long', year:'numeric'});
+}
+
+function renderChart() {
+  const wrap = document.getElementById('chart-wrap');
+  const closedDays = Object.entries(data.days).filter(([,d]) => d.closed).sort((a,b) => a[0].localeCompare(b[0]));
+  if (closedDays.length === 0) { wrap.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:30px 0;text-align:center;width:100%;">أقفل أيامك لترى الرسم البياني</div>'; return; }
+
+  const maxVal = Math.max(...closedDays.map(([,d]) => d.total), DAILY_LIMIT) * 1.2;
+  let cumulSaving = 0;
+  const savingPoints = [];
+
+  wrap.innerHTML = '';
+  closedDays.forEach(([date, day], i) => {
+    cumulSaving += DAILY_LIMIT - day.total;
+    savingPoints.push(cumulSaving);
+    const barHeight = Math.max(2, (day.total / maxVal) * 100);
+    const color = getDayColorHex(day.total);
+    const shortDate = new Date(date).getDate();
+    const barWrap = document.createElement('div');
+    barWrap.className = 'chart-bar-wrap';
+    barWrap.innerHTML = `
+      <div class="chart-bar" style="height:${barHeight}%;background:${color};" title="${day.total} ر"></div>
+      <div class="chart-day-label">${shortDate}</div>
+    `;
+    wrap.appendChild(barWrap);
+  });
+
+  // خط الحد
+  const limitPct = (DAILY_LIMIT / maxVal) * 100;
+  const limitLine = document.createElement('div');
+  limitLine.className = 'chart-limit-line';
+  limitLine.style.bottom = limitPct + '%';
+  wrap.style.position = 'relative';
+  wrap.appendChild(limitLine);
+}
+
+function renderLog() {
+  const list = document.getElementById('log-list');
+  const allDates = new Set([
+    ...Object.keys(data.days),
+    ...Object.keys(data.openEntries || {})
+  ]);
+
+  if (allDates.size === 0) {
+    list.innerHTML = '<div class="empty-log">ما في سجل بعد — ابدأ بإضافة مصروف</div>';
+    return;
+  }
+
+  const sorted = [...allDates].sort((a,b) => b.localeCompare(a));
+  let html = '';
+
+  sorted.forEach(date => {
+    const closed = data.days[date]?.closed;
+    const entries = closed ? data.days[date].entries : (data.openEntries[date] || []);
+    const total = entries.reduce((s,e) => s+e.amount, 0);
+    const color = getDayColor(total);
+    const weekend = isWeekend(date);
+    const dayName = getDayName(date);
+    const displayDate = new Date(date).toLocaleDateString('ar-SA', {day:'numeric', month:'short'});
+    const blockId = 'day-' + date;
+
+    if (closed) {
+      html += `
+      <div class="day-block">
+        <div class="day-header closed-day-${color} ${weekend?'weekend-header':''}" onclick="toggleDay('${blockId}')">
+          <div class="day-header-right">
+            <div>
+              <div class="day-name ${weekend?'':''}">
+                ${weekend ? '<span style="color:var(--weekend-text)">' : ''}${dayName}${weekend ? '</span>' : ''}
+              </div>
+              <div class="day-date">${displayDate}</div>
+            </div>
+            <span class="badge-${color} day-badge">${getDayBadgeText(total)}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="day-total" style="color:${getDayColorHex(total)}">${toAr(total)} ر</div>
+            <div class="chevron" id="chevron-${blockId}">▾</div>
+          </div>
+        </div>
+        <div class="day-entries" id="${blockId}" style="display:none;">
+          ${entries.map(e => `
+            <div class="entry-row">
+              <div class="entry-left">
+                <div class="entry-desc">${e.desc}</div>
+                <div class="entry-cat">${e.cat}</div>
+                ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
+              </div>
+              <div class="entry-amount">${toAr(e.amount)} ر</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    } else {
+      html += `
+      <div class="day-block">
+        <div class="day-header open-day-header ${weekend?'weekend-header':''}">
+          <div class="day-header-right">
+            <div>
+              <div class="day-name">${weekend ? '<span style="color:var(--weekend-text)">':''}${dayName}${weekend?'</span>':''} <span style="font-size:10px;color:var(--text2);">مفتوح</span></div>
+              <div class="day-date">${displayDate}</div>
+            </div>
+          </div>
+          <div class="day-total">${toAr(total)} ر</div>
+        </div>
+        <div class="day-entries">
+          ${entries.map(e => `
+            <div class="entry-row">
+              <div class="entry-left">
+                <div class="entry-desc">${e.desc}</div>
+                <div class="entry-cat">${e.cat}</div>
+                ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
+              </div>
+              <div class="entry-amount">${toAr(e.amount)} ر</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }
+  });
+
+  list.innerHTML = html;
+}
+
+function toggleDay(id) {
+  const el = document.getElementById(id);
+  const ch = document.getElementById('chevron-' + id);
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (ch) ch.classList.toggle('open', !open);
+}
+
+let currentCat = 'طعام 🏠';
+
+function toggleSub() {
+  const v = document.getElementById('exp-cat').value;
+  document.getElementById('food-sub').style.display = v === 'طعام 🏠' ? 'flex' : 'none';
+  document.getElementById('car-sub').style.display = v === 'سيارة ⛽' ? 'flex' : 'none';
+  document.getElementById('fixed-sub').style.display = v === 'ثوابت 📱' ? 'flex' : 'none';
+  if (!['طعام 🏠','سيارة ⛽','ثوابت 📱'].includes(v)) currentCat = v;
+  else currentCat = v;
+}
+
+function selectSub(btn, cat) {
+  btn.closest('.sub-row').querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = cat;
+}
+
+function showToast(msg, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (ok ? 'ok' : 'err');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+function addExpense() {
+  const date = document.getElementById('exp-date').value;
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  const desc = document.getElementById('exp-desc').value.trim();
+  if (!date || !amount || !desc) { showToast('يرجى تعبئة التاريخ والمبلغ والوصف', false); return; }
+  if (!data.openEntries) data.openEntries = {};
+  if (!data.openEntries[date]) data.openEntries[date] = [];
+  data.openEntries[date].push({ amount, desc, cat: currentCat, note: document.getElementById('exp-note').value.trim() });
+  document.getElementById('exp-amount').value = '';
+  document.getElementById('exp-desc').value = '';
+  document.getElementById('exp-note').value = '';
+  save(); updateUI(); renderLog(); renderChart();
+  showToast('تمت الإضافة ✅', true);
+}
+
+function closeDay() {
+  const date = document.getElementById('exp-date').value;
+  if (!date) { showToast('اختر التاريخ أولاً', false); return; }
+  const entries = (data.openEntries || {})[date] || [];
+  
+  const total = entries.reduce((s,e) => s+e.amount, 0);
+  if (!data.days) data.days = {};
+  data.days[date] = { closed: true, entries, total };
+  if (data.openEntries[date]) delete data.openEntries[date];
+  save(); updateUI(); renderLog(); renderChart();
+  showToast(`تم إقفال اليوم ✅  المجموع: ${toAr(total)} ر`, true);
+}
+
+// Init
+load();
+const today = getToday();
+document.getElementById('exp-date').value = today;
+updateUI();
+renderLog();
+renderChart();
+</script>
+</body>
+</html>

@@ -150,7 +150,7 @@ select { width: 100%; padding: 9px 11px; background: var(--bg3); border: 0.5px s
   <div class="metric">
     <div class="metric-label">المصروف</div>
     <div class="metric-value" id="total-spent-val" style="color:var(--red);">٠</div>
-    <div class="metric-sub">من بداية الشهر</div>
+    <div class="metric-sub">صرف اليوم</div>
   </div>
   <div class="metric metric-saving">
     <div class="metric-label">التوفير</div>
@@ -288,19 +288,18 @@ function calcCountdown() {
 }
 
 function calcTotals() {
-  let totalSpent = 0;
+  let todaySpent = 0;
   let saving = 0;
   Object.entries(data.days).forEach(([date, day]) => {
     if (day.closed) {
-      totalSpent += day.total;
       saving += DAILY_LIMIT - day.total;
     }
   });
-  // أضف المفتوح
   Object.values(data.openEntries || {}).forEach(entries => {
-    entries.forEach(e => totalSpent += e.amount);
+    entries.forEach(e => todaySpent += e.amount);
   });
-  return { totalSpent, saving };
+  return { totalSpent: todaySpent, saving };
+}
 }
 
 function updateUI() {
